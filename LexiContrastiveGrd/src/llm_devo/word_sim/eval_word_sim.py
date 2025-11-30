@@ -92,6 +92,8 @@ def get_parser():
     parser.add_argument(
             '--ckpt_path', default=None, type=str, action='store')
     parser.add_argument(
+            '--tokenizer')
+    parser.add_argument(
             '--output_file', default=None, type=str, action='store')
     parser.add_argument(
             '--output_csv', default=None, type=str, action='store')
@@ -119,6 +121,16 @@ def get_parser():
             type=str, action='store')
     #args = parser.parse_args()
     return parser
+
+
+def set_default_args(args):
+    if args.ckpt_path is not None:
+        if args.output_file is None:
+            args.output_file = os.path.join(args.ckpt_path, "wr_output.txt")
+        if args.output_csv is None:
+            args.output_csv = os.path.join(args.ckpt_path, "wr_output.csv")
+        if args.output_final_avg_score_csv is None:
+            args.output_final_avg_score_csv = os.path.join(args.ckpt_path, "wr_final_avg_score.csv")
 
 
 HUMAN_CSVs = [
@@ -431,6 +443,7 @@ class WordSimRunner(use_lm_eval.LMEvalRunner):
 def main():
     parser = get_parser()
     args = parser.parse_args()
+    set_default_args(args)
 
     if not os.path.isfile(args.output_file):
         with open(args.output_file, 'w') as file:

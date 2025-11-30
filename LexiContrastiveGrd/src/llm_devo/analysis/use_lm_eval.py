@@ -9,9 +9,6 @@ import numpy as np
 import pickle
 from tqdm import tqdm
 
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, AutoModelForCausalLM
-from transformers import AutoTokenizer, RobertaTokenizer, RobertaForMaskedLM, AutoModelForMaskedLM
-
 from llm_devo.env_vars\
         import ROOT_DIR, ROOT_DIR_FREQ_ORG
 
@@ -158,21 +155,17 @@ class LMEvalRunner:
             #                    pretrained=args.ckpt_path,
             #                    device="cuda")
             '''
-            if 'GPT2' in args.ckpt_path:
-                tokenizer = GPT2Tokenizer.from_pretrained(args.ckpt_path)
+            from transformers import AutoModelForCausalLM, AutoModelForMaskedLM, AutoTokenizer
+            tokenizer = AutoTokenizer.from_pretrained(args.ckpt_path if getattr(args, "tokenizer", None) is None else args.tokenizer)
+            try:
                 model = AutoModelForCausalLM.from_pretrained(args.ckpt_path, pad_token_id=tokenizer.eos_token_id)
-                self.lm = LLMDevoModels(
-                        model, tokenizer,
-                        extra_forward_mode=self.extra_forward_mode)
-
-            elif 'roberta' in args.ckpt_path:
-                tokenizer = RobertaTokenizer.from_pretrained(args.ckpt_path)
+            except:
                 model = AutoModelForMaskedLM.from_pretrained(args.ckpt_path)
-                self.lm = LLMDevoModels(
-                        model, tokenizer,
-                        extra_forward_mode=self.extra_forward_mode)                
+            self.lm = LLMDevoModels(
+                    model, tokenizer,
+                    extra_forward_mode=self.extra_forward_mode)
             return
-        assert NotImplementedError
+        raise NotImplementedError
 
     def get_task_in_res(self):
         now_task = self.now_task

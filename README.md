@@ -244,19 +244,26 @@ conda create -n babyLM_WR python=3.9
 conda activate babyLM_WR
 pip install -e .
 pip install git+https://github.com/chengxuz/lm-evaluation-harness.git
-pip install pytest pycountry openpyxl scipy sacrebleu sklearn
+pip install pytest pycountry openpyxl scipy sacrebleu scikit-learn protobuf
 ```
 
 #### Evaluation command:
 ```bash
-export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 cd src/llm_devo/word_sim
 python eval_word_sim.py \
   --ckpt_path <path_to_model> \
+  --tokenizer <path_to_tokenizer> \
   --output_file <results_txt> \
   --output_csv <results_csv> \
   --output_final_avg_score_csv <avg_csv>
 ```
+Where arguments other than `ckpt_path` are optional.
+- `tokenizer` default to `<ckpt_path>`;
+- `output_file` default to `<ckpt_path>/wr_output.txt`;
+- `output_csv` default to `<ckpt_path>/wr_output.csv`;
+- `output_final_avg_score_csv` default to `<ckpt_path>/wr_final_avg_score.csv`.
+
+After running the evaluation, you may find the results in those output files.
 
 #### Evaluate multiple models:
 ```bash
