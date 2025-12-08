@@ -248,6 +248,9 @@ pip install pytest pycountry openpyxl scipy sacrebleu scikit-learn protobuf
 ```
 
 #### Evaluation command:
+
+Before running the command, check if there is a cache folder `llm_devo_word_sim_results`, and clear it if yes.
+
 ```bash
 cd src/llm_devo/word_sim
 python eval_word_sim.py \
